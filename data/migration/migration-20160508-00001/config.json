@@ -1,0 +1,1 @@
+{"options":{"forceNew":true,"backup":true,"saveSql":true,"client":"mysql","clientOrigin":null,"drop":false,"host":"127.0.0.1","user":null,"password":null,"database":null,"hostOrigin":"127.0.0.1","userOrigin":null,"passwordOrigin":null,"databaseOrigin":null},"newMigration":true,"migrationOrigin":null,"schemaTarget":1,"migrated":false}

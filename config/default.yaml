@@ -1,0 +1,4 @@
+---
+log:
+  consoleLevel: 'debug'
+  public: true
