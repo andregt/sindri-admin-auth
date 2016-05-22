@@ -23,8 +23,8 @@
     "lodash": "^4.12.0",
     "moment": "^2.13.0",
     "sindri-admin": "^0.3",
-    "sindri-auth": "*",
-    "sindri-crud": "*",
+    "sindri-auth": "^0.4",
+    "sindri-crud": "^0.2",
     "sindri-framework": "^0.8"
   }
 }
