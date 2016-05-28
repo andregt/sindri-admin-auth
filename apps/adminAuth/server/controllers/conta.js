@@ -22,7 +22,7 @@ class ContaController extends Controller {
         this.get('/contas', (request, response) => {
 
             let dataSync = new DataSync(response);
-            
+
             ContaModel
                 .getCollections(undefined, undefined, true)
                 .then((result) => {
@@ -36,10 +36,44 @@ class ContaController extends Controller {
         });
 
         /**
+         * Retorna Todos as Contas
+         * Aceita apenas id, ref:
+         * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
+         *
+         */
+        this.get('/contas/:id(\\d+)', (request, response) => {
+
+            let dataSync = new DataSync(response);
+
+            let id = request.params.id;
+
+            let conta = new ContaModel();
+
+            conta
+                .setId(id)
+                .then(function () {
+
+                    return conta.getData()
+
+                })
+                .then((result) => {
+
+                    dataSync.send(result);
+
+                })
+                .catch((err) => {
+
+                    dataSync.exception(err);
+
+                });
+
+        });
+
+        /**
          * Grava novo Registro
          *
          */
-        this.post('/contas', function(request, response){
+        this.post('/contas', function (request, response) {
 
             // Salva
             let conta = new ContaModel();
@@ -50,21 +84,97 @@ class ContaController extends Controller {
                 .then(() => {
 
                     return conta.save();
-                    
-                })
-                .then(function(result){
 
+                })
+                .then(function (result) {
 
                     self.sendModelResult(result, dataSync);
 
                 })
                 .catch((err) => {
-                    
+
                     dataSync.exception(err);
 
                 });
 
 
+        });
+
+
+        /**
+         * Atualiza Registro
+         * Aceita apenas id, ref:
+         * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
+         *
+         */
+        this.put('/contas/:id(\\d+)', (request, response) => {
+
+            let dataSync = new DataSync(response);
+
+            let id = request.params.id;
+
+            let conta = new ContaModel();
+
+            conta
+                .setId(id)
+                .then(function () {
+
+                    return conta.setData(request.body)
+
+                })
+                .then(function () {
+
+                    return conta.save();
+
+                })
+                .then(function (result) {
+
+                    self.sendModelResult(result, dataSync);
+
+                })
+                .catch(err => {
+
+                    dataSync.exception(err);
+
+                });
+
+        });
+
+        /**
+         * TODO: Estudar o DELETE para muitos registros (verifica se é possível "postar" um json com lista de itens) ou se (vai precisar usar POST mesmo)
+         *
+         *
+         * Remove Registro
+         * Aceita apenas id, ref:
+         * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
+         *
+         */
+        this.delete('/contas/:id(\\d+)', (request, response) => {
+
+            let dataSync = new DataSync(response);
+
+            let id = request.params.id;
+
+            let conta = new ContaModel();
+
+            conta
+                .setId(id)
+                .then(function () {
+
+                    return conta.delete();
+
+                })
+                .then(function () {
+
+                    // TODO: Existe o HttpStatusCode 205 q é retorno sem conteudo
+                    self.sendModelResult(true, dataSync);
+
+                })
+                .catch(err => {
+
+                    dataSync.exception(err);
+
+                });
 
         });
 
@@ -83,7 +193,7 @@ class ContaController extends Controller {
 
     }
 
-    
+
 }
 
 module.exports = ContaController;

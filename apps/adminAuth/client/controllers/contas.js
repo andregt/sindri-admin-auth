@@ -10,18 +10,32 @@ class ContasController {
     constructor(authAPI) {
 
 
+        // TODO: Usar APICHECK
         this.crudOptions = {
 
             api: "/contas",
 
-            // TODO: Usar angular intercptions (ver video angularjs)
+            // TODO: Usar angular interceptions (ver video angularjs)
             httpRequest: function () {
                 return authAPI.http.apply(authAPI, arguments);
             },
 
+
             addButtonLabel: "criar conta",
+
             createFormLabel: "Nova Conta",
+
             createFormLayout: 2,
+
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Configurações do DataGrid
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            gridOptions:{
+
+
+
+            },
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Atributos Especiais do Formulário

@@ -21,12 +21,12 @@ class ContaModel extends Model {
 
         this.relations = {};
 
+
         this.schema = {
 
             conta_id: {
                 type: 'numeric'
             },
-
             nome: {
                 type: "string",
                 size: 255,
@@ -58,6 +58,7 @@ class ContaModel extends Model {
             },
             tipoCadastro: {
                 type: "enum",
+                'default': 'F',
                 enum: {
                     F: 'Física',
                     J: "Júridica"
@@ -66,7 +67,11 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         group: 1,
-                        className: 'col-md-4'
+                        className: 'col-md-4',
+                        grid: {
+                            width: 120,
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] == "F" ? "Pessoa Física" : "Pessoa Jurídica" }}</div>'
+                        }
                     }
                 }
             },
@@ -76,7 +81,7 @@ class ContaModel extends Model {
                 validation: {
                     required: null,
                     unique: "CPF/CNPJ já cadastrado",
-                    custom: function (fieldName, fieldInfo, options, model) {
+                    custom: function (fieldName, fieldInfo, oldData, options, model) {
 
                         // Valida CPF e CNPJ
                         let tipoCadastro = model.schema.tipoCadastro.value;
@@ -102,7 +107,8 @@ class ContaModel extends Model {
                         mask: "cpf",
                         group: 1,
                         className: 'col-md-2',
-                        label: "CPF/CNPJ"
+                        label: "CPF/CNPJ",
+                        availableGrid: false
                     }
                 }
             },
@@ -117,7 +123,8 @@ class ContaModel extends Model {
                     'default': {
                         group: 2,
                         className: 'col-md-3',
-                        label: "R.G."
+                        label: "R.G.",
+                        availableGrid: false
                     }
                 }
             },
@@ -131,7 +138,8 @@ class ContaModel extends Model {
                     'default': {
                         group: 2,
                         className: 'col-md-3',
-                        label: "Inscrição Estadual"
+                        label: "Inscrição Estadual",
+                        availableGrid: false
                     }
                 }
             },
@@ -145,7 +153,8 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         group: 2,
-                        className: 'col-md-4'
+                        className: 'col-md-4',
+                        availableGrid: false
                     }
                 }
             },
@@ -154,7 +163,7 @@ class ContaModel extends Model {
                 validation: {
                     required: undefined,
                     rangeDate: {
-                        minDate: new Date(1916,1,1),
+                        minDate: new Date(1916, 1, 1),
                         maxDate: moment().subtract(18, 'years').toDate()
                     }
                 },
@@ -162,7 +171,8 @@ class ContaModel extends Model {
                     'default': {
                         group: 2,
                         className: 'col-md-2',
-                        label: "Nascimento"
+                        label: "Nascimento",
+                        availableGrid: false
                     }
                 }
             },
@@ -174,31 +184,33 @@ class ContaModel extends Model {
                     'default': {
                         group: 3,
                         className: 'col-md-3',
-                        label: "Endereço"
+                        label: "Endereço",
+                        availableGrid: false
                     }
                 }
             },
             numero: {
                 type: "numeric",
-                size: 15,
+                size: 6,
                 validation: 'required',
                 client: {
                     'default': {
                         group: 3,
                         className: 'col-md-1',
-                        label: "Número"
+                        label: "Número",
+                        availableGrid: false
                     }
                 }
             },
             complemento: {
                 type: "string",
                 size: 15,
-                validation: 'required',
                 client: {
                     'default': {
                         group: 3,
                         className: 'col-md-2',
-                        label: "Complemento"
+                        label: "Complemento",
+                        availableGrid: false
                     }
                 }
             },
@@ -211,19 +223,20 @@ class ContaModel extends Model {
                         mask: "cep",
                         group: 3,
                         className: 'col-md-2',
-                        label: "CEP"
+                        label: "CEP",
+                        availableGrid: false
                     }
                 }
             },
             bairro: {
                 type: "string",
                 size: 255,
-                validation: 'required',
                 client: {
                     'default': {
                         group: 3,
                         className: 'col-md-2',
-                        label: "Bairro"
+                        label: "Bairro",
+                        availableGrid: false
                     }
                 }
             },
@@ -247,7 +260,10 @@ class ContaModel extends Model {
                     'default': {
                         group: 4,
                         className: 'col-md-1',
-                        label: "Estado"
+                        label: "Estado",
+                        grid: {
+                            width: 60
+                        }
                     }
                 }
             },
@@ -259,7 +275,8 @@ class ContaModel extends Model {
                     'default': {
                         group: 4,
                         className: 'col-md-3',
-                        label: "País"
+                        label: "País",
+                        availableGrid: false
                     }
                 }
             },
@@ -272,7 +289,11 @@ class ContaModel extends Model {
                         mask: 'phonebr',
                         group: 4,
                         className: 'col-md-2',
-                        label: "Telefone"
+                        label: "Telefone",
+                        grid: {
+                            width: 120,
+                            cellFilter: "googleLibPhoneNumber"
+                        }
                     }
                 }
             },
@@ -284,17 +305,27 @@ class ContaModel extends Model {
                         mask: 'phonebr',
                         group: 4,
                         className: 'col-md-2',
-                        label: "Celular"
+                        label: "Celular",
+                        grid: {
+                            width: 120,
+                            cellFilter: "googleLibPhoneNumber"
+                        }
                     }
                 }
             },
             ativo: {
                 type: "bool",
+                'default': true,
                 client: {
                     'default': {
                         label: "Conta Ativa",
                         group: 5,
-                        className: 'col-md-2'
+                        className: 'col-md-2',
+                        grid: {
+                            displayName: "Status",
+                            width: 60,
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
+                        }
                     }
                 }
             }

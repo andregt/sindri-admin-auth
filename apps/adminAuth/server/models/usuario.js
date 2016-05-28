@@ -47,6 +47,7 @@ class UsuarioModel extends Model {
                 validation: ['required'],
                 select: false,
                 set: function bcrypt(value, fieldName, model) {
+
                     return auth.createHash(value);
                 },
                 client: true
