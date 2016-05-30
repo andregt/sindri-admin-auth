@@ -51,6 +51,34 @@ class UsuarioModel extends Model {
                     return auth.createHash(value);
                 },
                 client: true
+            },
+            email: {
+                type: "string",
+                size: 255,
+                validation: {
+                    required: undefined,
+                    unique: 'E-mail já cadastrado',
+                    email: undefined
+                },
+                client: {
+                    'default': {
+                        group: 1,
+                        className: 'col-md-3',
+                        label: "E-mail"
+                    }
+                }
+            },
+            nome: {
+                type: 'string',
+                size: 255,
+                nullable: false,
+                validation: ['required'],
+                client: {
+                    'default': {
+                        label: "Usuário"
+                    }
+                }
+
             }
 
         };
@@ -234,7 +262,6 @@ class UsuarioModel extends Model {
             });
 
     }
-
 
 
 }
