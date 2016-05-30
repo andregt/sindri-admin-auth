@@ -1,6 +1,6 @@
 {
   "name": "sindri-admin-auth",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Gerenciamento de usuário e perfil básico para o sindri-admin",
   "main": "main.js",
   "scripts": {
