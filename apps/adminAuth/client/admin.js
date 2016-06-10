@@ -7,6 +7,7 @@
 
 const angular = require('angular');
 const ContaController = require('./controllers/contas');
+const UsuarioController = require('./controllers/usuarios');
 
 require('sindri-crud');
 
@@ -17,7 +18,9 @@ let acessoModule = angular.module('app.adminAuth', ['sindriCrud']);
 
 acessoModule
     .config(require('./routing'))
-    .controller('ContaController', ContaController);
+    .controller('ContaController', ContaController)
+    .controller('UsuarioController', UsuarioController);
 
 
 module.exports = acessoModule.name;
+

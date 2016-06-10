@@ -10,9 +10,15 @@ module.exports = function routes($stateProvider) {
     $stateProvider
         .state('admin.conta', {
             url: 'contas',
-            template: require('./templates/conta.html'),
+            template: require('./templates/contas.html'),
             controller: 'ContaController',
             controllerAs: 'contas'
+        })
+        .state('admin.usuario', {
+            url: 'usuarios',
+            template: require('./templates/usuarios.html'),
+            controller: 'UsuarioController',
+            controllerAs: 'usuarios'
         });
 
 };

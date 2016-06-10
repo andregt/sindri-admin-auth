@@ -19,6 +19,8 @@ class ContaModel extends Model {
 
         this.primaryKey = 'conta_id';
 
+        this.url = "/contas";
+
         this.relations = {};
 
 

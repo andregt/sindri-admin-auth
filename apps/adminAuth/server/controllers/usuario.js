@@ -7,23 +7,23 @@
 
 const Controller = require('sindri-framework/controller');
 const DataSync = require('sindri-framework/lib/dataSync');
-const ContaModel = require('../models/conta');
+const UsuarioModel = require('../models/usuario');
 
-class ContaController extends Controller {
+class UsuarioController extends Controller {
 
     routes() {
 
         let self = this;
 
         /**
-         * Retorna Todos as Contas
+         * Retorna Usuário Especifico
          *
          */
-        this.get('/contas', (request, response) => {
+        this.get('/usuarios', (request, response) => {
 
             let dataSync = new DataSync(response);
 
-            ContaModel
+            UsuarioModel
                 .getCollections(true)
                 .then((result) => {
                     dataSync.send(result);
@@ -36,24 +36,24 @@ class ContaController extends Controller {
         });
 
         /**
-         * Retorna Todos as Contas
+         * Retorna Todos as Usuarios
          * Aceita apenas id, ref:
          * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
          *
          */
-        this.get('/contas/:id(\\d+)', (request, response) => {
+        this.get('/usuarios/:id(\\d+)', (request, response) => {
 
             let dataSync = new DataSync(response);
 
             let id = request.params.id;
 
-            let conta = new ContaModel();
+            let usuario = new UsuarioModel();
 
-            conta
+            usuario
                 .setId(id)
                 .then(function () {
 
-                    return conta.getData(true, true)
+                    return usuario.getData(true, true)
 
                 })
                 .then((result) => {
@@ -70,20 +70,20 @@ class ContaController extends Controller {
         });
 
         /**
-         * Grava novo Registro
+         * Grava novo Usuário
          *
          */
-        this.post('/contas', function (request, response) {
+        this.post('/usuarios', function (request, response) {
 
             // Salva
-            let conta = new ContaModel();
+            let usuario = new UsuarioModel();
             let dataSync = new DataSync(response);
 
-            conta
+            usuario
                 .setData(request.body)
                 .then(() => {
 
-                    return conta.save();
+                    return usuario.save();
 
                 })
                 .then(function (result) {
@@ -107,24 +107,42 @@ class ContaController extends Controller {
          * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
          *
          */
-        this.put('/contas/:id(\\d+)', (request, response) => {
+        this.put('/usuarios/:id(\\d+)', (request, response) => {
 
             let dataSync = new DataSync(response);
 
             let id = request.params.id;
 
-            let conta = new ContaModel();
+            // let usuario = new UsuarioModel();
 
-            conta
-                .setId(id)
+            // usuario.getData(false, true).then(function(){
+            //
+            //     console.log(arguments)
+            //
+            //     usuario.save().then(function(result){
+            //
+            //         // self.sendModelResult(result, dataSync);
+            //
+            //         console.log(result);
+            //
+            //     }).catch(function(){
+            //
+            //         console.log(arguments)
+            //
+            //     })
+            //
+            //
+            // });
+
+
+            let usuario = new UsuarioModel(id);
+
+            usuario
+                .setData(request.body)
+
                 .then(function () {
 
-                    return conta.setData(request.body)
-
-                })
-                .then(function () {
-
-                    return conta.save();
+                    return usuario.save();
 
                 })
                 .then(function (result) {
@@ -144,24 +162,25 @@ class ContaController extends Controller {
          * TODO: Estudar o DELETE para muitos registros (verifica se é possível "postar" um json com lista de itens) ou se (vai precisar usar POST mesmo)
          *
          *
-         * Remove Registro
+         * Remove Usuario
+         *
          * Aceita apenas id, ref:
          * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
          *
          */
-        this.delete('/contas/:id(\\d+)', (request, response) => {
+        this.delete('/usuarios/:id(\\d+)', (request, response) => {
 
             let dataSync = new DataSync(response);
 
             let id = request.params.id;
 
-            let conta = new ContaModel();
+            let usuario = new UsuarioModel();
 
-            conta
+            usuario
                 .setId(id)
                 .then(function () {
 
-                    return conta.delete();
+                    return usuario.delete();
 
                 })
                 .then(function () {
@@ -182,12 +201,12 @@ class ContaController extends Controller {
         /**
          * Retorna Informação do Formulário para ser processado pelo Cliente
          */
-        this.get('/contas/schema/:template?', function (request, response) {
+        this.get('/usuarios/schema/:template?', function (request, response) {
 
             let dataSync = new DataSync(response);
             let template = request.params.template;
 
-            dataSync.send(ContaModel.getSchema(template));
+            dataSync.send(UsuarioModel.getSchema(template));
 
         });
 
@@ -196,4 +215,4 @@ class ContaController extends Controller {
 
 }
 
-module.exports = ContaController;
+module.exports = UsuarioController;

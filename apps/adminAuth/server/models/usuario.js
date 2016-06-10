@@ -9,6 +9,8 @@ const Model = require('sindri-framework/model');
 const auth = require('sindri-auth/auth');
 const _ = require('lodash');
 
+const ContaModel = require('./conta');
+
 class UsuarioModel extends Model {
 
     setup() {
@@ -19,6 +21,38 @@ class UsuarioModel extends Model {
 
         this.primaryKey = 'usuario_id';
 
+        this.url = "/usuarios";
+
+        this.relations = {
+
+            conta: {
+                type: 'ManyToOne',
+                model: ContaModel,
+                foreignKey: 'conta_id',
+                columns: ["nome", "email"], // Colunas extras que serão carregadas para o grid
+                select: true,
+                client: {
+                    'default': {
+                        ord: 0,
+                        placeholder: "Selecione uma Conta",
+                        noResultsText: "Nenhuma Conta Carregada",
+                        format: "${row.nome} - ${row.email} (#${row.id})",
+                        grid: {
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity["conta__email"] + " (#" + row.entity[col.field] + ")" }}</div>'
+                        }
+                    }
+                }
+            }
+
+            // perfis: {
+            //     type: 'ManyToMany',
+            //     model: PerfilModel,
+            //     relationTable: 'usuario__perfil'
+            // }
+
+        };
+
+
         this.schema = {
 
             usuario_id: {
@@ -26,7 +60,7 @@ class UsuarioModel extends Model {
                 name: 'id' // Automatico para Primay Key, mas está aqui para ilustrar oq poderia ser feito com outros campos tb (renomear)
             },
 
-
+            // TODO: Usuário deve ser minusculo, contar letras, numeros, underscore ou ponto
             usuario: {
                 type: 'string',
                 size: 255,
@@ -34,7 +68,8 @@ class UsuarioModel extends Model {
                 validation: ['required', 'unique'],
                 client: {
                     'default': {
-                        label: "Usuário"
+                        label: "Usuário",
+                        ord: 1
                     }
                 }
 
@@ -42,16 +77,44 @@ class UsuarioModel extends Model {
 
             senha: {
                 type: 'string',
-                size: 255,
+                // size: 255,
                 nullable: false,
-                validation: ['required'],
+                validation: ['password'],
                 select: false,
                 set: function bcrypt(value, fieldName, model) {
 
-                    return auth.createHash(value);
+                    // TODO: Criar Filtro no sindriModel (Verificar Viabilidade)
+                    if (value) {
+                        return auth.createHash(value);
+                    } else {
+                        return "";
+                    }
+
                 },
-                client: true
+                client: {
+                    'default': {
+                        ord: 2,
+                        forceType: "password"
+                    }
+                }
             },
+
+            nome: {
+                type: 'string',
+                size: 255,
+                nullable: false,
+                validation: ['required'],
+                client: {
+                    'default': {
+                        availableGrid: false,
+                        label: "Nome Completo",
+                        ord: 3
+
+                    }
+                }
+
+            },
+
             email: {
                 type: "string",
                 size: 255,
@@ -62,24 +125,92 @@ class UsuarioModel extends Model {
                 },
                 client: {
                     'default': {
-                        group: 1,
-                        className: 'col-md-3',
-                        label: "E-mail"
+                        label: "E-mail",
+                        ord: 4
                     }
                 }
             },
-            nome: {
-                type: 'string',
-                size: 255,
-                nullable: false,
-                validation: ['required'],
+
+            administradorGeral: {
+                type: "bool",
+                'default': false,
                 client: {
                     'default': {
-                        label: "Usuário"
+                        label: "Administrador Geral",
+                        ord: 5,
+                        grid: {
+                            width: 90,
+                            displayName: "Adm Geral",
+                            // TODO: Criar plugin sindriGrid para boolean
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                        }
+                    }
+                }
+            },
+
+            administradorConta: {
+                type: "bool",
+                'default': false,
+                client: {
+                    'default': {
+                        label: "Administrador da Conta",
+                        ord: 6,
+                        grid: {
+                            displayName: "Adm Conta",
+                            width: 90,
+                            // TODO: Criar plugin sindriGrid para boolean
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                        }
                     }
                 }
 
+            },
+
+            // TODO: Expiração será manual? configurar Periodo de expiração em dias e data de alteração
+            // expiracaoSenha: {
+            //     type: "datetime",
+            //     'default': null,
+            //     client: {
+            //         'default': {
+            //             label: "Senha Expira em",
+            //             availableGrid: false
+            //         }
+            //     }
+            // },
+
+            alterarSenha: {
+                type: "bool",
+                'default': false,
+                client: {
+                    'default': {
+                        label: "Exigir troca de senha na próxima autenticação",
+                        ord: 7,
+                        availableGrid: false,
+                        grid: {
+                            displayName: "Trocar Senha",
+                            // TODO: Criar plugin sindriGrid para boolean
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                        }
+                    }
+                }
+            },
+
+            ativo: {
+                type: "bool",
+                'default': true,
+                client: {
+                    'default': {
+                        label: "Conta Ativa",
+                        ord: 8,
+                        grid: {
+                            displayName: "Status",
+                            width: 60,
+                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
+                        }
+                    }
+                }
             }
+
 
         };
 
