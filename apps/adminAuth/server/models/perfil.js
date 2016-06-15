@@ -129,7 +129,9 @@ class PerfilModel extends Model {
         //////////////////////////////////////////////////
 
         // Não alterou
-        if (oldData.conta_id === self.getInternal('conta') && oldData.nome === self.getInternal('nome')) {
+
+
+        if (!self.isNew() && oldData.conta_id === self.getInternal('conta') && oldData.nome === self.getInternal('nome')) {
 
             return true;
 
