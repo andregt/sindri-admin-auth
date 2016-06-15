@@ -25,6 +25,7 @@
     "sindri-admin": "^0.3",
     "sindri-auth": "^0.4",
     "sindri-crud": "^0.2",
-    "sindri-framework": "^0.8"
+    "sindri-framework": "^0.8",
+    "validator": "^5.4.0"
   }
 }

@@ -8,6 +8,7 @@
 const Model = require('sindri-framework/model');
 const auth = require('sindri-auth/auth');
 const _ = require('lodash');
+const validator = require('validator');
 
 const ContaModel = require('./conta');
 
@@ -25,6 +26,7 @@ class UsuarioModel extends Model {
 
         this.relations = {
 
+
             conta: {
                 type: 'ManyToOne',
                 model: ContaModel,
@@ -34,11 +36,16 @@ class UsuarioModel extends Model {
                 client: {
                     'default': {
                         ord: 0,
-                        placeholder: "Selecione uma Conta",
-                        noResultsText: "Nenhuma Conta Carregada",
-                        format: "${row.nome} - ${row.email} (#${row.id})",
+                        form: {
+                            placeholder: "Selecione uma Conta",
+                            noResultsText: "Nenhuma Conta Encontrada",
+                            nullOption: "-- Nenhuma Conta Vinculada --",
+                            format: "${row.nome} - ${row.email} (#${row.id})"
+                        },
                         grid: {
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity["conta__email"] + " (#" + row.entity[col.field] + ")" }}</div>'
+                            nullText: "Nenhuma conta vinculada",
+                            customValue: '${row.entity["conta__email"]} (#${row.entity[col.field]})'
+
                         }
                     }
                 }
@@ -65,7 +72,18 @@ class UsuarioModel extends Model {
                 type: 'string',
                 size: 255,
                 nullable: false,
-                validation: ['required', 'unique'],
+                validation: {
+                    required: undefined,
+                    unique: "Usuário já existe",
+                    custom: function (fieldName, fieldInfo, oldData, options, model) {
+
+                        if (validator.isAlphanumeric(fieldInfo.value)){
+                            return true;
+                        } else {
+                            return "Usuário deve conter apenas letras e números";
+                        }
+                    }
+                },
                 client: {
                     'default': {
                         label: "Usuário",
@@ -95,6 +113,7 @@ class UsuarioModel extends Model {
                     'default': {
                         ord: 2,
                         forceType: "password"
+
                     }
                 }
             },
@@ -106,7 +125,9 @@ class UsuarioModel extends Model {
                 validation: ['required'],
                 client: {
                     'default': {
-                        availableGrid: false,
+                        grid: {
+                            availableGrid: false,
+                        },
                         label: "Nome Completo",
                         ord: 3
 
@@ -139,10 +160,12 @@ class UsuarioModel extends Model {
                         label: "Administrador Geral",
                         ord: 5,
                         grid: {
-                            width: 90,
-                            displayName: "Adm Geral",
-                            // TODO: Criar plugin sindriGrid para boolean
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                            gridOptions: {
+                                width: 90,
+                                displayName: "Adm Geral",
+                                // TODO: Criar plugin sindriGrid para boolean
+                                cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                            }
                         }
                     }
                 }
@@ -156,10 +179,12 @@ class UsuarioModel extends Model {
                         label: "Administrador da Conta",
                         ord: 6,
                         grid: {
-                            displayName: "Adm Conta",
-                            width: 90,
-                            // TODO: Criar plugin sindriGrid para boolean
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                            gridOptions: {
+                                displayName: "Adm Conta",
+                                width: 90,
+                                // TODO: Criar plugin sindriGrid para boolean
+                                cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                            }
                         }
                     }
                 }
@@ -187,9 +212,12 @@ class UsuarioModel extends Model {
                         ord: 7,
                         availableGrid: false,
                         grid: {
-                            displayName: "Trocar Senha",
-                            // TODO: Criar plugin sindriGrid para boolean
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                            gridOptions: {
+                                displayName: "Trocar Senha",
+                                width: 120,
+                                // TODO: Criar plugin sindriGrid para boolean
+                                cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
+                            }
                         }
                     }
                 }
@@ -203,9 +231,11 @@ class UsuarioModel extends Model {
                         label: "Conta Ativa",
                         ord: 8,
                         grid: {
-                            displayName: "Status",
-                            width: 60,
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
+                            gridOptions: {
+                                displayName: "Status",
+                                width: 60,
+                                cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
+                            }
                         }
                     }
                 }

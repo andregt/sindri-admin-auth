@@ -35,8 +35,10 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 1,
-                        className: 'col-md-3',
+                        form: {
+                            group: 1,
+                            className: 'col-md-3'
+                        },
                         label: "Nome Completo"
                     }
                 }
@@ -52,8 +54,10 @@ class ContaModel extends Model {
                 },
                 client: {
                     'default': {
-                        group: 1,
-                        className: 'col-md-3',
+                        form: {
+                            group: 1,
+                            className: 'col-md-3',
+                        },
                         label: "E-mail"
                     }
                 }
@@ -68,11 +72,15 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 1,
-                        className: 'col-md-4',
+                        form: {
+                            group: 1,
+                            className: 'col-md-4'
+                        },
                         grid: {
-                            width: 120,
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] == "F" ? "Pessoa Física" : "Pessoa Jurídica" }}</div>'
+                            gridOptions: {
+                                width: 120,
+                                cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] == "F" ? "Pessoa Física" : "Pessoa Jurídica" }}</div>'
+                            }
                         }
                     }
                 }
@@ -107,10 +115,14 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         mask: "cpf",
-                        group: 1,
-                        className: 'col-md-2',
                         label: "CPF/CNPJ",
-                        availableGrid: false
+                        form: {
+                            group: 1,
+                            className: 'col-md-2'
+                        },
+                        grid: {
+                            availableGrid: false
+                        }
                     }
                 }
             },
@@ -123,10 +135,14 @@ class ContaModel extends Model {
                 },
                 client: {
                     'default': {
-                        group: 2,
-                        className: 'col-md-3',
-                        label: "R.G.",
-                        availableGrid: false
+                        form: {
+                            group: 2,
+                            className: 'col-md-3'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "R.G."
                     }
                 }
             },
@@ -138,10 +154,14 @@ class ContaModel extends Model {
                 },
                 client: {
                     'default': {
-                        group: 2,
-                        className: 'col-md-3',
-                        label: "Inscrição Estadual",
-                        availableGrid: false
+                        form: {
+                            group: 2,
+                            className: 'col-md-3'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "Inscrição Estadual"
                     }
                 }
             },
@@ -154,9 +174,13 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 2,
-                        className: 'col-md-4',
-                        availableGrid: false
+                        form: {
+                            group: 2,
+                            className: 'col-md-4',
+                        },
+                        grid: {
+                            availableGrid: false
+                        }
                     }
                 }
             },
@@ -171,10 +195,14 @@ class ContaModel extends Model {
                 },
                 client: {
                     'default': {
-                        group: 2,
-                        className: 'col-md-2',
-                        label: "Nascimento",
-                        availableGrid: false
+                        form: {
+                            group: 2,
+                            className: 'col-md-2'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "Nascimento"
                     }
                 }
             },
@@ -184,10 +212,14 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 3,
-                        className: 'col-md-3',
-                        label: "Endereço",
-                        availableGrid: false
+                        form: {
+                            group: 3,
+                            className: 'col-md-3'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "Endereço"
                     }
                 }
             },
@@ -197,10 +229,14 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 3,
-                        className: 'col-md-1',
-                        label: "Número",
-                        availableGrid: false
+                        form: {
+                            group: 3,
+                            className: 'col-md-1'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "Número"
                     }
                 }
             },
@@ -209,10 +245,14 @@ class ContaModel extends Model {
                 size: 15,
                 client: {
                     'default': {
-                        group: 3,
-                        className: 'col-md-2',
-                        label: "Complemento",
-                        availableGrid: false
+                        form: {
+                            group: 3,
+                            className: 'col-md-2'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "Complemento"
                     }
                 }
             },
@@ -223,10 +263,14 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         mask: "cep",
-                        group: 3,
-                        className: 'col-md-2',
-                        label: "CEP",
-                        availableGrid: false
+                        form: {
+                            group: 3,
+                            className: 'col-md-2'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "CEP"
                     }
                 }
             },
@@ -235,10 +279,14 @@ class ContaModel extends Model {
                 size: 255,
                 client: {
                     'default': {
-                        group: 3,
-                        className: 'col-md-2',
-                        label: "Bairro",
-                        availableGrid: false
+                        form: {
+                            group: 3,
+                            className: 'col-md-2'
+                        },
+                        grid: {
+                            availableGrid: false
+                        },
+                        label: "Bairro"
                     }
                 }
             },
@@ -248,8 +296,10 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 3,
-                        className: 'col-md-2',
+                        form: {
+                            group: 3,
+                            className: 'col-md-2'
+                        },
                         label: "Município"
                     }
                 }
@@ -260,11 +310,15 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 4,
-                        className: 'col-md-1',
+                        form: {
+                            group: 4,
+                            className: 'col-md-1'
+                        },
                         label: "Estado",
                         grid: {
-                            width: 60
+                            gridOptions: {
+                                width: 60
+                            }
                         }
                     }
                 }
@@ -275,10 +329,14 @@ class ContaModel extends Model {
                 validation: 'required',
                 client: {
                     'default': {
-                        group: 4,
-                        className: 'col-md-3',
+                        form: {
+                            group: 4,
+                            className: 'col-md-3',
+                        },
                         label: "País",
-                        availableGrid: false
+                        grid: {
+                            availableGrid: false
+                        }
                     }
                 }
             },
@@ -289,12 +347,16 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         mask: 'phonebr',
-                        group: 4,
-                        className: 'col-md-2',
                         label: "Telefone",
+                        form: {
+                            group: 4,
+                            className: 'col-md-2'
+                        },
                         grid: {
-                            width: 120,
-                            cellFilter: "googleLibPhoneNumber"
+                            gridOptions: {
+                                width: 120,
+                                cellFilter: "googleLibPhoneNumber"
+                            }
                         }
                     }
                 }
@@ -305,12 +367,16 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         mask: 'phonebr',
-                        group: 4,
-                        className: 'col-md-2',
+                        form: {
+                            group: 4,
+                            className: 'col-md-2'
+                        },
                         label: "Celular",
                         grid: {
-                            width: 120,
-                            cellFilter: "googleLibPhoneNumber"
+                            gridOptions: {
+                                width: 120,
+                                cellFilter: "googleLibPhoneNumber"
+                            }
                         }
                     }
                 }
@@ -321,12 +387,16 @@ class ContaModel extends Model {
                 client: {
                     'default': {
                         label: "Conta Ativa",
-                        group: 5,
-                        className: 'col-md-2',
+                        form: {
+                            group: 5,
+                            className: 'col-md-2'
+                        },
                         grid: {
-                            displayName: "Status",
-                            width: 60,
-                            cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
+                            gridOptions: {
+                                displayName: "Status",
+                                width: 60,
+                                cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
+                            }
                         }
                     }
                 }

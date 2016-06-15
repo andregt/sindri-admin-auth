@@ -19,6 +19,24 @@ module.exports = function routes($stateProvider) {
             template: require('./templates/usuarios.html'),
             controller: 'UsuarioController',
             controllerAs: 'usuarios'
+        })
+        .state('admin.perfil', {
+            url: 'perfis',
+            template: require('./templates/perfis.html'),
+            controller: 'PerfilController',
+            controllerAs: 'perfis'
+        })
+        .state('admin.permissao', {
+            url: 'permissoes',
+            template: require('./templates/permissoes.html'),
+            controller: 'PermissoesController',
+            controllerAs: 'permissoes'
+        })
+        .state('admin.menu', {
+            url: 'menu',
+            template: require('./templates/menu.html'),
+            controller: 'MenuController',
+            controllerAs: 'menu'
         });
 
 };
