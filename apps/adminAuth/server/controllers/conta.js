@@ -8,6 +8,7 @@
 const Controller = require('sindri-framework/controller');
 const DataSync = require('sindri-framework/lib/dataSync');
 const ContaModel = require('../models/conta');
+const Auth = require('sindri-auth/auth');
 
 class ContaController extends Controller {
 
@@ -19,19 +20,28 @@ class ContaController extends Controller {
          * Retorna Todos as Contas
          *
          */
-        this.get('/contas', (request, response) => {
+        this.get('/contas', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
 
-            ContaModel
-                .getCollections(true)
-                .then((result) => {
-                    dataSync.send(result);
-                })
-                .catch((err) => {
-                    dataSync.exception(err);
+            // Apenas administrador tem acesso à contas
+            if (!request.user.administradorGeral) {
 
-                });
+                dataSync.sendError("Forbidden", null, null, 403);
+
+            } else {
+
+                ContaModel
+                    .getCollections(true)
+                    .then((result) => {
+                        dataSync.send(result);
+                    })
+                    .catch((err) => {
+                        dataSync.exception(err);
+
+                    });
+
+            }
 
         });
 
@@ -41,31 +51,40 @@ class ContaController extends Controller {
          * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
          *
          */
-        this.get('/contas/:id(\\d+)', (request, response) => {
+        this.get('/contas/:id(\\d+)', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
 
-            let id = request.params.id;
+            // Apenas administrador tem acesso à contas
+            if (!request.user.administradorGeral) {
 
-            let conta = new ContaModel();
+                dataSync.sendError("Forbidden", null, null, 403);
 
-            conta
-                .setId(id)
-                .then(function () {
+            } else {
 
-                    return conta.getData(true, true)
+                let id = request.params.id;
 
-                })
-                .then((result) => {
+                let conta = new ContaModel();
 
-                    dataSync.send(result);
+                conta
+                    .setId(id)
+                    .then(function () {
 
-                })
-                .catch((err) => {
+                        return conta.getData(true, true)
 
-                    dataSync.exception(err);
+                    })
+                    .then((result) => {
 
-                });
+                        dataSync.send(result);
+
+                    })
+                    .catch((err) => {
+
+                        dataSync.exception(err);
+
+                    });
+
+            }
 
         });
 
@@ -73,33 +92,41 @@ class ContaController extends Controller {
          * Grava novo Registro
          *
          */
-        this.post('/contas', function (request, response) {
+        this.post('/contas', Auth.authenticate, function (request, response) {
 
             // Salva
-            let conta = new ContaModel();
+
             let dataSync = new DataSync(response);
 
-            conta
-                .setData(request.body)
-                .then(() => {
+            // Apenas administrador tem acesso à contas
+            if (!request.user.administradorGeral) {
 
-                    return conta.save();
+                dataSync.sendError("Forbidden", null, null, 403);
 
-                })
-                .then(function (result) {
+            } else {
 
-                    self.sendModelResult(result, dataSync);
+                let conta = new ContaModel();
 
-                })
-                .catch((err) => {
+                conta
+                    .setData(request.body)
+                    .then(() => {
 
-                    dataSync.exception(err);
+                        return conta.save();
 
-                });
+                    })
+                    .then(function (result) {
 
+                        self.sendModelResult(result, dataSync, false);
 
+                    })
+                    .catch((err) => {
+
+                        dataSync.exception(err);
+
+                    });
+
+            }
         });
-
 
         /**
          * Atualiza Registro
@@ -107,37 +134,45 @@ class ContaController extends Controller {
          * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
          *
          */
-        this.put('/contas/:id(\\d+)', (request, response) => {
+        this.put('/contas/:id(\\d+)', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
 
-            let id = request.params.id;
+            // Apenas administrador tem acesso à contas
+            if (!request.user.administradorGeral) {
 
-            let conta = new ContaModel();
+                dataSync.sendError("Forbidden", null, null, 403);
 
-            conta
-                .setId(id)
-                .then(function () {
+            } else {
 
-                    return conta.setData(request.body)
+                let id = request.params.id;
 
-                })
-                .then(function () {
+                let conta = new ContaModel();
 
-                    return conta.save();
+                conta
+                    .setId(id)
+                    .then(function () {
 
-                })
-                .then(function (result) {
+                        return conta.setData(request.body)
 
-                    self.sendModelResult(result, dataSync);
+                    })
+                    .then(function () {
 
-                })
-                .catch(err => {
+                        return conta.save();
 
-                    dataSync.exception(err);
+                    })
+                    .then(function (result) {
 
-                });
+                        self.sendModelResult(result, dataSync, false);
 
+                    })
+                    .catch(err => {
+
+                        dataSync.exception(err);
+
+                    });
+
+            }
         });
 
         /**
@@ -149,32 +184,41 @@ class ContaController extends Controller {
          * https://github.com/pillarjs/path-to-regexp#custom-match-parameters
          *
          */
-        this.delete('/contas/:id(\\d+)', (request, response) => {
+        this.delete('/contas/:id(\\d+)', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
 
-            let id = request.params.id;
+            // Apenas administrador tem acesso à contas
+            if (!request.user.administradorGeral) {
 
-            let conta = new ContaModel();
+                dataSync.sendError("Forbidden", null, null, 403);
 
-            conta
-                .setId(id)
-                .then(function () {
+            } else {
 
-                    return conta.delete();
 
-                })
-                .then(function () {
+                let id = request.params.id;
 
-                    // TODO: Existe o HttpStatusCode 205 q é retorno sem conteudo
-                    self.sendModelResult(true, dataSync);
+                let conta = new ContaModel();
 
-                })
-                .catch(err => {
+                conta
+                    .setId(id)
+                    .then(function () {
 
-                    dataSync.exception(err);
+                        return conta.delete();
 
-                });
+                    })
+                    .then(function () {
+
+                        // TODO: Existe o HttpStatusCode 205 q é retorno sem conteudo
+                        self.sendModelResult(true, dataSync);
+
+                    })
+                    .catch(err => {
+
+                        dataSync.exception(err);
+
+                    });
+            }
 
         });
 
@@ -182,12 +226,22 @@ class ContaController extends Controller {
         /**
          * Retorna Informação do Formulário para ser processado pelo Cliente
          */
-        this.get('/contas/schema/:template?', function (request, response) {
+        this.get('/contas/schema/:template?', Auth.authenticate, function (request, response) {
 
             let dataSync = new DataSync(response);
-            let template = request.params.template;
 
-            dataSync.send(ContaModel.getSchema(template));
+            // Apenas administrador tem acesso à contas
+            if (!request.user.administradorGeral) {
+
+                dataSync.sendError("Forbidden", null, null, 403);
+
+            } else {
+
+
+                let template = request.params.template;
+
+                dataSync.send(ContaModel.getSchema(template));
+            }
 
         });
 

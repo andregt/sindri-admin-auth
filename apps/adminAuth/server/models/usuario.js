@@ -10,11 +10,20 @@ const auth = require('sindri-auth/auth');
 const _ = require('lodash');
 const validator = require('validator');
 
-const ContaModel = require('./conta');
+
+/**
+ * Nome da Aba
+ * @type {string}
+ */
+const tabAttrName = 'Propriedades';
 
 class UsuarioModel extends Model {
 
     setup() {
+
+        /* Colocado dentro do setup() para evitar dependencia circular (quando ocorre dependencia circular, o nodejs retorna undefined para o modulo ) */
+        const ContaModel = require('./conta');
+        const PerfilModel = require('./perfil');
 
         this.connection = 'default';
 
@@ -26,7 +35,6 @@ class UsuarioModel extends Model {
 
         this.relations = {
 
-
             conta: {
                 type: 'ManyToOne',
                 model: ContaModel,
@@ -37,6 +45,7 @@ class UsuarioModel extends Model {
                     'default': {
                         ord: 0,
                         form: {
+                            tab: tabAttrName,
                             placeholder: "Selecione uma Conta",
                             noResultsText: "Nenhuma Conta Encontrada",
                             nullOption: "-- Nenhuma Conta Vinculada --",
@@ -47,15 +56,37 @@ class UsuarioModel extends Model {
                             customValue: '${row.entity["conta__email"]} (#${row.entity[col.field]})'
 
                         }
+                    },
+                    // Usuário De contas não tem acesso a alterar Conta
+                    conta: false,
+                    usuario: false
+                }
+            },
+
+            perfis: {
+                type: "ManyToMany",
+                model: PerfilModel,
+                relationTable: "usuario__perfil",
+                // foreignKey: "perfil_id",    // Normalmente não usado (detecta automatico)
+                // localKey: "usuario_id",      // Normalmente não usado (detecta automatico)
+                columns: ['nome'], // Trás dados da tabela Remota,
+                client: {
+                    'default': {
+                        grid: {
+                            available: false
+                        },
+                        form: {
+                            tab: 'Perfis',
+                            label: '',
+                            tableColumns: {
+                                nome: "Nome",
+                                descricao: "Descrição"
+                            },
+                            noResultsText: "Nenhum Perfil Disponível"
+                        }
                     }
                 }
             }
-
-            // perfis: {
-            //     type: 'ManyToMany',
-            //     model: PerfilModel,
-            //     relationTable: 'usuario__perfil'
-            // }
 
         };
 
@@ -77,7 +108,7 @@ class UsuarioModel extends Model {
                     unique: "Usuário já existe",
                     custom: function (fieldName, fieldInfo, oldData, options, model) {
 
-                        if (validator.isAlphanumeric(fieldInfo.value)){
+                        if (validator.isAlphanumeric(fieldInfo.value)) {
                             return true;
                         } else {
                             return "Usuário deve conter apenas letras e números";
@@ -87,7 +118,10 @@ class UsuarioModel extends Model {
                 client: {
                     'default': {
                         label: "Usuário",
-                        ord: 1
+                        ord: 1,
+                        form: {
+                            tab: tabAttrName
+                        }
                     }
                 }
 
@@ -112,7 +146,10 @@ class UsuarioModel extends Model {
                 client: {
                     'default': {
                         ord: 2,
-                        forceType: "password"
+                        forceType: "password",
+                        form: {
+                            tab: tabAttrName
+                        }
 
                     }
                 }
@@ -126,10 +163,13 @@ class UsuarioModel extends Model {
                 client: {
                     'default': {
                         grid: {
-                            availableGrid: false,
+                            available: false
                         },
                         label: "Nome Completo",
-                        ord: 3
+                        ord: 3,
+                        form: {
+                            tab: tabAttrName
+                        }
 
                     }
                 }
@@ -147,7 +187,10 @@ class UsuarioModel extends Model {
                 client: {
                     'default': {
                         label: "E-mail",
-                        ord: 4
+                        ord: 4,
+                        form: {
+                            tab: tabAttrName
+                        }
                     }
                 }
             },
@@ -166,8 +209,14 @@ class UsuarioModel extends Model {
                                 // TODO: Criar plugin sindriGrid para boolean
                                 cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
                             }
+                        },
+                        form: {
+                            tab: tabAttrName
                         }
-                    }
+                    },
+                    // Usuário De contas não tem acesso a alterar Conta
+                    conta: false,
+                    usuario: false
                 }
             },
 
@@ -185,8 +234,13 @@ class UsuarioModel extends Model {
                                 // TODO: Criar plugin sindriGrid para boolean
                                 cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
                             }
-                        }
-                    }
+                        },
+                        form: {
+                            tab: tabAttrName
+                        } // Usuário Normal não tem acesso a alterar administrador de conta
+
+                    },
+                    usuario: false
                 }
 
             },
@@ -198,7 +252,7 @@ class UsuarioModel extends Model {
             //     client: {
             //         'default': {
             //             label: "Senha Expira em",
-            //             availableGrid: false
+            //             available: false
             //         }
             //     }
             // },
@@ -210,7 +264,7 @@ class UsuarioModel extends Model {
                     'default': {
                         label: "Exigir troca de senha na próxima autenticação",
                         ord: 7,
-                        availableGrid: false,
+                        available: false,
                         grid: {
                             gridOptions: {
                                 displayName: "Trocar Senha",
@@ -218,8 +272,12 @@ class UsuarioModel extends Model {
                                 // TODO: Criar plugin sindriGrid para boolean
                                 cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Sim" : "Não" }}</div>'
                             }
+                        },
+                        form: {
+                            tab: tabAttrName
                         }
-                    }
+                    },
+                    usuario: false
                 }
             },
 
@@ -236,6 +294,9 @@ class UsuarioModel extends Model {
                                 width: 60,
                                 cellTemplate: '<div class="ui-grid-cell-contents">{{ row.entity[col.field] ? "Ativo" : "Inativo" }}</div>'
                             }
+                        },
+                        form: {
+                            tab: tabAttrName
                         }
                     }
                 }
@@ -292,11 +353,17 @@ class UsuarioModel extends Model {
      */
     static getClientUser(user) {
 
+
         return {
-            // permissions: user.permissions,
-            // admin: (user.administrador === true),
-            // account: !_.isNull(user.conta),
-            // owner: !_.isNull(user.proprietario)
+            id: user.id,
+            user: user.usuario,
+            name: user.nome,
+            email: user.email,
+            image: user.image,
+            registrationDate: new Date(user.dataCadastro),
+            accountAdmin: user.administradorConta,
+            admin: user.administradorGeral,
+            permissions: user.permissions
         };
 
     }
@@ -378,18 +445,16 @@ class UsuarioModel extends Model {
         /////////////////////////////////////////////////////////////
         //Carrega Info do Usuário
         /////////////////////////////////////////////////////////////
-        return usuario.db('usuario as u')
-            .first('u.usuario_id as id')
+        return usuario.db('usuario')
+            .first('usuario_id as id', 'usuario', 'administradorConta', 'administradorGeral', 'nome', 'email', 'imagem', 'dataCadastro', 'conta_id as conta')
             .where({
-                "u.ativo": true,
-                "u.usuario": username
+                "ativo": true,
+                "usuario": username
             })
             .then(function (row) {
 
                 // Pegamos o valor do primeiro byte
                 user = row;
-                // user.administrador = user.administradorGe[0];
-
 
             })
             /////////////////////////////////////////////////////////////
@@ -398,17 +463,17 @@ class UsuarioModel extends Model {
             .then(function () {
 
                 return usuario.db
-                    .select('pe.permissao AS permissao')
+                    .distinct('pe.permissao AS permissao')
                     .from('usuario as u')
                     .join('usuario__perfil as up', 'up.usuario_id', 'u.usuario_id')
                     .join('perfil as p', 'up.perfil_id', 'p.perfil_id')
                     .join('perfil__permissao AS pp', 'p.perfil_id', 'pp.perfil_id')
                     .join('permissao as pe', 'pp.permissao_id', 'pe.permissao_id')
                     .where({
-                        "u.ativo": 1,
+                        "p.ativo": true,
+                        "u.ativo": true,
                         "u.usuario": username
                     });
-
 
             })
             /////////////////////////////////////////////////////////////
@@ -417,6 +482,8 @@ class UsuarioModel extends Model {
             .then(function (rows) {
 
                 user.permissions = _.map(rows, 'permissao');
+                user.administradorConta = !!user.administradorConta[0];
+                user.administradorGeral = !!user.administradorGeral[0];
 
                 return user;
 

@@ -121,7 +121,7 @@ class ContaModel extends Model {
                             className: 'col-md-2'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         }
                     }
                 }
@@ -140,7 +140,7 @@ class ContaModel extends Model {
                             className: 'col-md-3'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "R.G."
                     }
@@ -159,7 +159,7 @@ class ContaModel extends Model {
                             className: 'col-md-3'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "Inscrição Estadual"
                     }
@@ -179,7 +179,7 @@ class ContaModel extends Model {
                             className: 'col-md-4',
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         }
                     }
                 }
@@ -200,7 +200,7 @@ class ContaModel extends Model {
                             className: 'col-md-2'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "Nascimento"
                     }
@@ -217,7 +217,7 @@ class ContaModel extends Model {
                             className: 'col-md-3'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "Endereço"
                     }
@@ -234,7 +234,7 @@ class ContaModel extends Model {
                             className: 'col-md-1'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "Número"
                     }
@@ -250,7 +250,7 @@ class ContaModel extends Model {
                             className: 'col-md-2'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "Complemento"
                     }
@@ -268,7 +268,7 @@ class ContaModel extends Model {
                             className: 'col-md-2'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "CEP"
                     }
@@ -284,7 +284,7 @@ class ContaModel extends Model {
                             className: 'col-md-2'
                         },
                         grid: {
-                            availableGrid: false
+                            available: false
                         },
                         label: "Bairro"
                     }
@@ -335,7 +335,7 @@ class ContaModel extends Model {
                         },
                         label: "País",
                         grid: {
-                            availableGrid: false
+                            available: false
                         }
                     }
                 }

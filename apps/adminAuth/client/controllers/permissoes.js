@@ -9,26 +9,39 @@
 
 class PermissoesController {
 
-    constructor(authAPI) {
+    constructor(authAPI, sindriAdmin) {
 
         let self = this;
 
         // TODO: Usar APICHECK
         self.crudOptions = {
-            api: "/permissoes",
+            url: "/permissoes",
+            loadSchemaFromServer: true,
             httpRequest: function () {
                 // TODO: Usar angular interceptions (ver video angularjs)
                 return authAPI.http.apply(authAPI, arguments);
             },
             addButtonLabel: "criar permissão",
             createFormLabel: "Nova Permissão",
+            updateFormLabel: "Editar Permissão",
             createFormLayout: 0,
-            updateFormLayout: 1,
+            updateFormLayout: 0,
             formOptions: {},
-            formFieldOptions: {}
+            formFieldOptions: {},
+            onSave: function (data) {
+
+                // Atualiza Menu ao salvar
+                sindriAdmin.updateMenu().then(function () {
+
+
+                    // Abre Menu Administração
+                    let adminMenu =_.find(sindriAdmin.api.menu, ["nome", "administracao"]);
+                    adminMenu.status = "active";
+
+                })
+            }
         };
     }
 }
-
 
 module.exports = PermissoesController;

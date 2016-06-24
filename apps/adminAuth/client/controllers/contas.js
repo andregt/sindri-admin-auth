@@ -13,7 +13,10 @@ class ContasController {
         // TODO: Usar APICHECK
         this.crudOptions = {
 
-            api: "/contas",
+            url: "/contas",
+            loadSchemaFromServer: true,
+
+
 
             // TODO: Usar angular interceptions (ver video angularjs)
             httpRequest: function () {
@@ -25,6 +28,8 @@ class ContasController {
 
             createFormLabel: "Nova Conta",
 
+            updateFormLabel: "Alterar Conta",
+
             createFormLayout: 2,
 
             updateFormLayout: 2,
@@ -35,6 +40,11 @@ class ContasController {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             gridOptions: {},
 
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            // Configurações do Form
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            formOptions: {},
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Atributos Especiais do Formulário
             // TODO: Documentar como definir atributos personalizado do formulário aqui

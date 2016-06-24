@@ -8,6 +8,7 @@
 const Controller = require('sindri-framework/controller');
 const DataSync = require('sindri-framework/lib/dataSync');
 const MenuModel = require('../models/menu');
+const Auth = require('sindri-auth/auth');
 
 class MenuController extends Controller {
 
@@ -17,9 +18,26 @@ class MenuController extends Controller {
 
         /**
          */
-        self.get('/menu', (request, response) => {
+        self.get('/menu', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
+
+            ///////////////////////////////////////////////////////////////////////
+            // Validação de Permissões
+            ///////////////////////////////////////////////////////////////////////
+            let user = request.user;
+
+            if (self.forbidden(dataSync, [
+                    {
+                        test: !user.administradorGeral,
+                        msg: "Você não tem Permissão para visualizar Menus"
+                    }
+
+                ])) {
+
+                return;
+            }
+
 
             MenuModel
                 .getCollections(true)
@@ -36,9 +54,25 @@ class MenuController extends Controller {
         /**
          * Retorna um unico menu
          */
-        this.get('/menu/:id(\\d+)', (request, response) => {
+        this.get('/menu/:id(\\d+)', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
+
+            ///////////////////////////////////////////////////////////////////////
+            // Validação de Permissões
+            ///////////////////////////////////////////////////////////////////////
+            let user = request.user;
+            if (self.forbidden(dataSync, [
+                    {
+                        test: !user.administradorGeral,
+                        msg: "Você não tem Permissão para Visualizar Menus"
+                    }
+
+                ])) {
+
+                return;
+            }
+
 
             let id = request.params.id;
 
@@ -67,11 +101,27 @@ class MenuController extends Controller {
         /**
          * Salva novo Menu
          */
-        self.post('/menu', function (request, response) {
+        self.post('/menu', Auth.authenticate, function (request, response) {
 
             // Salva
             let usuario = new MenuModel();
             let dataSync = new DataSync(response);
+
+            ///////////////////////////////////////////////////////////////////////
+            // Validação de Permissões
+            ///////////////////////////////////////////////////////////////////////
+            let user = request.user;
+            if (self.forbidden(dataSync, [
+                    {
+                        test: !user.administradorGeral,
+                        msg: "Você não tem Permissão para Alterar Menus"
+                    }
+
+                ])) {
+
+                return;
+            }
+
 
             usuario
                 .setData(request.body)
@@ -82,7 +132,7 @@ class MenuController extends Controller {
                 })
                 .then(function (result) {
 
-                    self.sendModelResult(result, dataSync);
+                    self.sendModelResult(result, dataSync, false);
 
                 })
                 .catch((err) => {
@@ -98,9 +148,25 @@ class MenuController extends Controller {
         /**
          * Atualiza Menu
          */
-        self.put('/menu/:id(\\d+)', (request, response) => {
+        self.put('/menu/:id(\\d+)', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
+
+            ///////////////////////////////////////////////////////////////////////
+            // Validação de Permissões
+            ///////////////////////////////////////////////////////////////////////
+            let user = request.user;
+            if (self.forbidden(dataSync, [
+                    {
+                        test: !user.administradorGeral,
+                        msg: "Você não tem Permissão para alterar Menus"
+                    }
+
+                ])) {
+
+                return;
+            }
+
 
             let id = request.params.id;
 
@@ -117,7 +183,7 @@ class MenuController extends Controller {
                 })
                 .then(function (result) {
 
-                    self.sendModelResult(result, dataSync);
+                    self.sendModelResult(result, dataSync, false);
 
                 })
                 .catch(err => {
@@ -132,9 +198,25 @@ class MenuController extends Controller {
         /**
          * Remove Menu
          */
-        self.delete('/menu/:id(\\d+)', (request, response) => {
+        self.delete('/menu/:id(\\d+)', Auth.authenticate, (request, response) => {
 
             let dataSync = new DataSync(response);
+
+            ///////////////////////////////////////////////////////////////////////
+            // Validação de Permissões
+            ///////////////////////////////////////////////////////////////////////
+            let user = request.user;
+            if (self.forbidden(dataSync, [
+                    {
+                        test: !user.administradorGeral,
+                        msg: "Você não tem Permissão para remover Menus"
+                    }
+
+                ])) {
+
+                return;
+            }
+
 
             let id = request.params.id;
 
@@ -165,12 +247,43 @@ class MenuController extends Controller {
         /**
          * Retorna Schema do Menu
          */
-        self.get('/menu/schema/:template?', function (request, response) {
+        self.get('/menu/schema/:template?', Auth.authenticate, function (request, response) {
 
             let dataSync = new DataSync(response);
+
+            ///////////////////////////////////////////////////////////////////////
+            // Validação de Permissões
+            ///////////////////////////////////////////////////////////////////////
+            let user = request.user;
+            if (self.forbidden(dataSync, [
+                    {
+                        test: !user.administradorGeral,
+                        msg: "Você não tem Permissão para remover Menus"
+                    }
+
+                ])) {
+
+                return;
+            }
+
             let template = request.params.template;
 
             dataSync.send(MenuModel.getSchema(template));
+
+        });
+
+
+        self.get('/create-menu', Auth.authenticate, function (request, response) {
+
+
+            MenuModel.createMenu(request.user.id, request.user.administradorGeral).then(function (result) {
+
+                let dataSync = new DataSync(response);
+                dataSync.send(result);
+
+
+            });
+
 
         });
 

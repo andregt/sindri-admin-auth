@@ -11,23 +11,37 @@
 
 class MenuController {
 
-    constructor(authAPI) {
+    constructor(authAPI, sindriAdmin) {
 
         let self = this;
 
         // TODO: Usar APICHECK
         self.crudOptions = {
-            api: "/menu",
+            url: "/menu",
+            loadSchemaFromServer: true,
             httpRequest: function () {
                 // TODO: Usar angular interceptions (ver video angularjs)
                 return authAPI.http.apply(authAPI, arguments);
             },
             addButtonLabel: "criar menu",
             createFormLabel: "Novo Menu",
+            editarFormLabel: "Editar Menu",
             createFormLayout: 0,
             updateFormLayout: 1,
             formOptions: {},
-            formFieldOptions: {}
+            formFieldOptions: {},
+            onSave: function (data) {
+
+                // Atualiza Menu ao salvar
+                sindriAdmin.updateMenu().then(function () {
+
+
+                    // Abre Menu Administração
+                    let adminMenu =_.find(sindriAdmin.api.menu, ["nome", "administracao"]);
+                    adminMenu.status = "active";
+
+                })
+            }
         };
     }
 }
